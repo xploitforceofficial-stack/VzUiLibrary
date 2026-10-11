@@ -8,16 +8,17 @@ local HttpService = game:GetService("HttpService")
 
 local Custom = {}
 do
-	Custom.ColorRGB = Color3.fromRGB(178, 80, 255)
-	Custom.ObsidianTop = Color3.fromRGB(15, 14, 22)
-	Custom.ObsidianMid = Color3.fromRGB(6, 7, 12)
-	Custom.ObsidianLow = Color3.fromRGB(26, 14, 38)
-	Custom.Surface = Color3.fromRGB(18, 19, 27)
-	Custom.Surface2 = Color3.fromRGB(23, 22, 32)
-	Custom.Surface3 = Color3.fromRGB(31, 27, 42)
-	Custom.Stroke = Color3.fromRGB(112, 63, 176)	
-	Custom.Text = Color3.fromRGB(235, 236, 245)
-	Custom.Muted = Color3.fromRGB(156, 154, 170)
+	Custom.ColorRGB = Color3.fromRGB(75, 180, 235) -- Subtle Luxury Neon Ice-Blue / Cyan
+	Custom.ObsidianTop = Color3.fromRGB(24, 25, 31)
+	Custom.ObsidianMid = Color3.fromRGB(16, 17, 22)
+	Custom.ObsidianLow = Color3.fromRGB(12, 13, 17)
+	Custom.Surface = Color3.fromRGB(20, 21, 26)
+	Custom.Surface2 = Color3.fromRGB(26, 27, 34)
+	Custom.Surface3 = Color3.fromRGB(33, 35, 43)
+	Custom.Stroke = Color3.fromRGB(60, 145, 195)
+	Custom.StrokeSubtle = Color3.fromRGB(42, 45, 56)
+	Custom.Text = Color3.fromRGB(255, 255, 255)
+	Custom.Muted = Color3.fromRGB(180, 184, 195)
 	Custom.Font = Enum.Font.GothamBold
 	Custom.FontBody = Enum.Font.Gotham
 
@@ -268,26 +269,47 @@ local function GetGuiParent()
 	return GuiParent
 end
 
+local function FormatAssetId(id)
+	if not id or id == "" or id == 0 then
+		return ""
+	end
+	local s = tostring(id):gsub("%s+", "")
+	if s == "" then
+		return ""
+	end
+	if s:find("^rbxassetid://") or s:find("^http") or s:find("^rbxthumb://") then
+		return s
+	end
+	return "rbxassetid://" .. s
+end
+
 local function OpenClose()
 	local ScreenGui = Custom:Create("ScreenGui", {
-		Name = "WisHUBRuntime",
+		Name = "VzUiLibraryRuntime",
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		ResetOnSpawn = false,
 	}, GetGuiParent())
 
 	local Close_ImageButton = Custom:Create("ImageButton", {
-		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+		BackgroundColor3 = Custom.ObsidianMid,
 		BorderColor3 = Color3.fromRGB(0, 0, 0),
 		BorderSizePixel = 0,
-		BackgroundTransparency = 1,
-		Position = UDim2.new(0.1021, 0, 0.0743, 0),
-		Size = UDim2.new(0, 50, 0, 50),
-		Image = "rbxassetid://117265667838927",
+		BackgroundTransparency = 0.25,
+		Position = UDim2.new(0.03, 0, 0.12, 0),
+		Size = UDim2.new(0, 46, 0, 46),
+		Image = "rbxassetid://97023853932052",
 		Visible = true,
 	}, ScreenGui)
 
 	Custom:Create("UICorner", {
 		Name = "MainCorner",
-		CornerRadius = UDim.new(0, 12),
+		CornerRadius = UDim.new(0, 10),
+	}, Close_ImageButton)
+
+	Custom:Create("UIStroke", {
+		Color = Custom.ColorRGB,
+		Thickness = 1,
+		Transparency = 0.55,
 	}, Close_ImageButton)
 
 	local dragging, dragStart, startPos = false, nil, nil
@@ -295,7 +317,7 @@ local function OpenClose()
 	local function UpdateDraggable(input)
 		local delta = input.Position - dragStart
 		if delta.Magnitude > 6 then
-			Close_ImageButton:SetAttribute("WisDragged", true)
+			Close_ImageButton:SetAttribute("VzDragged", true)
 		end
 		Close_ImageButton.Position =
 			UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
@@ -309,7 +331,7 @@ local function OpenClose()
 			dragging = true
 			dragStart = input.Position
 			startPos = Close_ImageButton.Position
-			Close_ImageButton:SetAttribute("WisDragged", false)
+			Close_ImageButton:SetAttribute("VzDragged", false)
 
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
@@ -437,68 +459,170 @@ function CircleClick(Button, X, Y)
 end
 
 local Icons = {
-	player = "rbxassetid://12120698352",
-	web = "rbxassetid://137601480983962",
-	bag = "rbxassetid://8601111810",
-	shop = "rbxassetid://4985385964",
-	cart = "rbxassetid://128874923961846",
-	plug = "rbxassetid://137601480983962",
+	-- Brand / Logo
+	vz = "rbxassetid://97023853932052",
+	logo = "rbxassetid://97023853932052",
+
+	-- General & Navigation
+	home = "rbxassetid://10709782497",
+	search = "rbxassetid://3926305904",
+	menu = "rbxassetid://6340513838",
 	settings = "rbxassetid://70386228443175",
+	sliders = "rbxassetid://10709787497",
+	info = "rbxassetid://16833255748",
+	idea = "rbxassetid://16833255748",
+	question = "rbxassetid://17510196486",
+	alert = "rbxassetid://73186275216515",
+	check = "rbxassetid://10709805497",
+	close = "rbxassetid://10709783497",
+	refresh = "rbxassetid://122032243989747",
 	loop = "rbxassetid://122032243989747",
+	bell = "rbxassetid://10709808497",
+	star = "rbxassetid://107005941750079",
+	lock = "rbxassetid://10709806497",
+	unlock = "rbxassetid://10709807497",
+	key = "rbxassetid://10709800497",
+	trash = "rbxassetid://10709810497",
+	edit = "rbxassetid://10709811497",
+	copy = "rbxassetid://10709812497",
+	folder = "rbxassetid://10709813497",
+	file = "rbxassetid://10709814497",
+
+	-- Player & Movement
+	player = "rbxassetid://12120698352",
+	user = "rbxassetid://108483430622128",
+	users = "rbxassetid://10709762497",
+	heart = "rbxassetid://10709815497",
+	speed = "rbxassetid://10709788497",
+	walk = "rbxassetid://10709788497",
+	run = "rbxassetid://10709788497",
+	jump = "rbxassetid://10709789497",
+	fly = "rbxassetid://10709790497",
+	teleport = "rbxassetid://17824309485",
 	gps = "rbxassetid://17824309485",
 	compas = "rbxassetid://125300760963399",
-	gamepad = "rbxassetid://84173963561612",
-	boss = "rbxassetid://13132186360",
-	scroll = "rbxassetid://114127804740858",
-	menu = "rbxassetid://6340513838",
-	crosshair = "rbxassetid://12614416478",
-	user = "rbxassetid://108483430622128",
-	stat = "rbxassetid://12094445329",
-	eyes = "rbxassetid://14321059114",
+	compass = "rbxassetid://125300760963399",
+
+	-- Combat & Visuals
 	sword = "rbxassetid://82472368671405",
-	discord = "rbxassetid://94434236999817",
-	star = "rbxassetid://107005941750079",
+	combat = "rbxassetid://82472368671405",
+	shield = "rbxassetid://10709784497",
+	crosshair = "rbxassetid://12614416478",
+	aim = "rbxassetid://12614416478",
+	eyes = "rbxassetid://14321059114",
+	eye = "rbxassetid://14321059114",
+	visual = "rbxassetid://14321059114",
+	visuals = "rbxassetid://14321059114",
+	esp = "rbxassetid://14321059114",
+	skull = "rbxassetid://17313330026",
 	skeleton = "rbxassetid://17313330026",
-	payment = "rbxassetid://18747025078",
+	boss = "rbxassetid://13132186360",
 	scan = "rbxassetid://109869955247116",
-	alert = "rbxassetid://73186275216515",
-	question = "rbxassetid://17510196486",
-	idea = "rbxassetid://16833255748",
-	strom = "rbxassetid://13321880293",
+	zap = "rbxassetid://10709803497",
+	lightning = "rbxassetid://10709803497",
+	flame = "rbxassetid://10709804497",
+	fire = "rbxassetid://10709804497",
 	water = "rbxassetid://100076212630732",
+	strom = "rbxassetid://13321880293",
+	storm = "rbxassetid://13321880293",
+
+	-- Charts, Analytics & Real-Time Data
+	chart = "rbxassetid://10709791497",
+	graph = "rbxassetid://12094445329",
+	stat = "rbxassetid://12094445329",
+	analytics = "rbxassetid://12094445329",
+	activity = "rbxassetid://10709794497",
+	pulse = "rbxassetid://10709794497",
+	trending_up = "rbxassetid://10709792497",
+	trending_down = "rbxassetid://10709793497",
+	line_chart = "rbxassetid://10709791497",
+	bar_chart = "rbxassetid://12094445329",
+
+	-- Trading, Economy & Shopping
+	trade = "rbxassetid://10709792497",
+	trading = "rbxassetid://10709792497",
+	dollar = "rbxassetid://10709795497",
+	money = "rbxassetid://10709795497",
+	cash = "rbxassetid://10709795497",
+	coins = "rbxassetid://10709796497",
+	wallet = "rbxassetid://18747025078",
+	payment = "rbxassetid://18747025078",
+	shop = "rbxassetid://4985385964",
+	cart = "rbxassetid://128874923961846",
+	bag = "rbxassetid://8601111810",
+	inventory = "rbxassetid://8601111810",
+	scroll = "rbxassetid://114127804740858",
+
+	-- Gaming & Items
+	gamepad = "rbxassetid://84173963561612",
+	game = "rbxassetid://84173963561612",
+	crown = "rbxassetid://10709798497",
+	trophy = "rbxassetid://10709799497",
+	rod = "rbxassetid://103247953194129",
+	fish = "rbxassetid://97167558235554",
+
+	-- Social & Web
+	discord = "rbxassetid://94434236999817",
+	web = "rbxassetid://137601480983962",
+	plug = "rbxassetid://137601480983962",
 	dcs = "rbxassetid://15310731934",
 	start = "rbxassetid://108886429866687",
 	next = "rbxassetid://12662718374",
-	rod = "rbxassetid://103247953194129",
-	fish = "rbxassetid://97167558235554",
 	mouse_pointer_click = "rbxassetid://7734010488",
+	palette = "rbxassetid://10709801497",
+	color = "rbxassetid://10709801497",
+	terminal = "rbxassetid://10709802497",
+	code = "rbxassetid://10709802497",
 }
 
 local DefaultTabIcons = {
+	main = "home",
+	home = "home",
 	info = "idea",
+	player = "player",
+	combat = "sword",
 	farm = "loop",
 	shop = "shop",
 	pet = "player",
 	misc = "menu",
 	visual = "eyes",
+	visuals = "eyes",
+	esp = "eyes",
+	teleport = "gps",
+	trading = "trade",
+	trade = "trade",
+	graph = "graph",
+	chart = "chart",
+	performance = "stat",
+	analytics = "stat",
+	game = "gamepad",
+	settings = "settings",
 	config = "settings",
+	inventory = "bag",
 }
 
-local WisHub_Library = {}
+local VzUiLibrary = {}
 
-WisHub_Library.Icons = Icons
-WisHub_Library.DefaultTabIcons = DefaultTabIcons
-WisHub_Library.Unloaded = false
+VzUiLibrary.Icons = Icons
+VzUiLibrary.DefaultTabIcons = DefaultTabIcons
+VzUiLibrary.Unloaded = false
+VzUiLibrary.FormatAssetId = FormatAssetId
 
-function WisHub_Library:SetNotification(Config)
-	local Title = Config[1] or Config.Title or ""
+-- VzHub Library table reference
+local VzHub_Library = VzUiLibrary
+
+function VzUiLibrary:SetNotification(Config)
+	Config = Config or {}
+	local Title = Config[1] or Config.Title or "VzHub"
 	local Description = Config[2] or Config.Description or ""
 	local Content = Config[3] or Config.Content or ""
 	local Time = Config[5] or Config.Time or 0.5
 	local Delay = Config[6] or Config.Delay or 5
 
 	local NotificationGui = Custom:Create("ScreenGui", {
+		Name = "VzNotifications",
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		ResetOnSpawn = false,
 	}, GetGuiParent())
 
 	local NotificationLayout = Custom:Create("Frame", {
@@ -542,7 +666,7 @@ function WisHub_Library:SetNotification(Config)
 	}, NotificationLayout)
 
 	local NotificationFrameReal = Custom:Create("Frame", {
-		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+		BackgroundColor3 = Custom.ObsidianMid,
 		BorderColor3 = Color3.fromRGB(0, 0, 0),
 		BorderSizePixel = 0,
 		Position = UDim2.new(0, 400, 0, 0),
@@ -552,6 +676,12 @@ function WisHub_Library:SetNotification(Config)
 
 	Custom:Create("UICorner", {
 		CornerRadius = UDim.new(0, 8),
+	}, NotificationFrameReal)
+
+	Custom:Create("UIStroke", {
+		Color = Custom.Stroke,
+		Thickness = 1,
+		Transparency = 0.65,
 	}, NotificationFrameReal)
 
 	local DropShadowHolder = Custom:Create("Frame", {
@@ -716,21 +846,24 @@ function WisHub_Library:SetNotification(Config)
 	return NotifFuncs
 end
 
-function WisHub_Library:CreateWindow(Config)
+function VzUiLibrary:CreateWindow(Config)
+	Config = Config or {}
 	local Title = Config[1] or Config.Title or ""
 	local Description = Config[2] or Config.Description or ""
 	local TabWidth = Config[3] or Config["Tab Width"] or 120
-	local SizeUi = Config[4] or Config.SizeUi or UDim2.fromOffset(580, 380)
-	local DiscordInvite = Config.Discord or Config[5] or "discord.gg/wishubx"
+	local SizeUi = Config[4] or Config.SizeUi or UDim2.fromOffset(590, 390)
+	local DiscordInvite = Config.Discord or Config[5] or "discord.gg/vzhub"
 	local DiscordLogo = Config.DiscordIcon or Config[6] or "rbxassetid://94434236999817"
-	local HubLogo = Config.Logo or Config.TitleLogo or "rbxassetid://105006444774299"
+	local HubLogo = FormatAssetId(Config.Logo or Config.TitleLogo or "97023853932052")
 	local HubLogoSize = Config.LogoSize or 24
 	local HubLogoColor = Config.LogoColor or Color3.fromRGB(255, 255, 255)
 
 	local Funcs = {}
 
-	local WisHubGui = Custom:Create("ScreenGui", {
+	local VzHubGui = Custom:Create("ScreenGui", {
+		Name = "VzUiLibrary",
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		ResetOnSpawn = false,
 	}, GetGuiParent())
 
 	local DropShadowHolder = Custom:Create("Frame", {
@@ -741,7 +874,7 @@ function WisHub_Library:CreateWindow(Config)
 		ZIndex = 0,
 		Name = "DropShadowHolder",
 		Position = UDim2.new(0.5, 0, 0.5, 0),
-	}, WisHubGui)
+	}, VzHubGui)
 
 	local DropShadow = Custom:Create("ImageLabel", {
 		Image = "rbxassetid://6015897843",
@@ -760,8 +893,8 @@ function WisHub_Library:CreateWindow(Config)
 
 	local Main = Custom:Create("Frame", {
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-		BackgroundTransparency = 0.11,
+		BackgroundColor3 = Custom.ObsidianMid,
+		BackgroundTransparency = 0.05,
 		BorderColor3 = Color3.fromRGB(0, 0, 0),
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
@@ -784,32 +917,36 @@ function WisHub_Library:CreateWindow(Config)
 	Custom:Create("UIStroke", {
 		Color = Custom.Stroke,
 		Thickness = 1,
-		Transparency = 0.86,
+		Transparency = 0.75,
 	}, Main)
+
+	-- Custom Background Decal Image Support (Default: Plain Gray / Grey Polos)
+	local RawBgImage = Config.BackgroundImage or Config.Background or Config.Decal or Config.Image
+	local BackgroundImage = Custom:Create("ImageLabel", {
+		Name = "BackgroundImage",
+		Image = FormatAssetId(RawBgImage or ""),
+		ImageTransparency = tonumber(Config.BackgroundTransparency) or (RawBgImage and 0.82 or 1),
+		ImageColor3 = Config.BackgroundImageColor or Color3.fromRGB(255, 255, 255),
+		ScaleType = Enum.ScaleType.Crop,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(1, 0, 1, 0),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ZIndex = 0,
+		ClipsDescendants = true,
+	}, Main)
+
+	Custom:Create("UICorner", {}, BackgroundImage)
 
 	local Top = Custom:Create("Frame", {
 		BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-		BackgroundTransparency = 0.9990000128746033,
+		BackgroundTransparency = 0.999,
 		BorderColor3 = Color3.fromRGB(0, 0, 0),
 		BorderSizePixel = 0,
 		Size = UDim2.new(1, 0, 0, 38),
 		Name = "Top",
 	}, Main)
-
-	local TextLabel = Custom:Create("TextLabel", {
-		Font = Custom.Font,
-		Text = "",
-		TextColor3 = Custom.ColorRGB,
-		TextSize = 14,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		BackgroundTransparency = 0.9990000128746033,
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		BorderSizePixel = 0,
-		Size = UDim2.new(0, 0, 1, 0),
-		Position = UDim2.new(0, 0, 0, 0),
-		Visible = false,
-	}, Top)
 
 	Custom:Create("UICorner", {}, Top)
 
@@ -822,7 +959,7 @@ function WisHub_Library:CreateWindow(Config)
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 11, 0.5, 0),
+		Position = UDim2.new(0, 10, 0.5, 0),
 		Size = UDim2.new(0, HubLogoSize, 0, HubLogoSize),
 		Name = "LogoImage",
 	}, Top)
@@ -831,34 +968,47 @@ function WisHub_Library:CreateWindow(Config)
 		CornerRadius = UDim.new(0, math.floor(HubLogoSize / 4)),
 	}, LogoImage)
 
-	local TextLabel1 = Custom:Create("TextLabel", {
+	local DisplayTitle = Title ~= "" and Title or "VzHub"
+	local TitleLabel = Custom:Create("TextLabel", {
 		Font = Custom.Font,
-		Text = "",
-		TextColor3 = Color3.fromRGB(235, 235, 240),
+		Text = DisplayTitle,
+		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 13,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		BackgroundTransparency = 0.9990000128746033,
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		Size = UDim2.new(0, 0, 1, 0),
-		Position = UDim2.new(0, 0, 0, 0),
-		Visible = false,
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 10 + HubLogoSize + 8, 0.5, 0),
+		Size = UDim2.new(0, 160, 1, 0),
+		Name = "TitleLabel",
 	}, Top)
 
-	Custom:Create("UIStroke", {
-		Color = Custom.ColorRGB,
-		Thickness = 0.4,
-	}, TextLabel1)
-
-	local DiscordPill = Custom:Create("Frame", {
+	local TitleWidth = math.clamp(#DisplayTitle * 8, 40, 140)
+	local DescLabel = Custom:Create("TextLabel", {
+		Font = Custom.FontBody,
+		Text = Description,
+		TextColor3 = Custom.Muted,
+		TextSize = 11,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
 		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 10 + HubLogoSize + 8 + TitleWidth + 6, 0.5, 0),
+		Size = UDim2.new(0, 140, 1, 0),
+		Visible = Description ~= "",
+		Name = "DescLabel",
+	}, Top)
+
+	local HasDiscord = DiscordInvite ~= false and DiscordInvite ~= ""
+	local DiscordPill = Custom:Create("Frame", {
+		AnchorPoint = Vector2.new(1, 0.5),
 		BackgroundColor3 = Custom.Surface3,
-		BackgroundTransparency = 0.08,
+		BackgroundTransparency = 0.15,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
-		Position = UDim2.new(0, 42, 0.5, 0),
-		Size = UDim2.new(0, 150, 0, 22),
+		Position = UDim2.new(1, -78, 0.5, 0),
+		Size = UDim2.new(0, 140, 0, 22),
+		Visible = HasDiscord,
 		Name = "DiscordPill",
 	}, Top)
 
@@ -869,7 +1019,7 @@ function WisHub_Library:CreateWindow(Config)
 	Custom:Create("UIStroke", {
 		Color = Custom.ColorRGB,
 		Thickness = 1,
-		Transparency = 0.62,
+		Transparency = 0.65,
 	}, DiscordPill)
 
 	local DiscordIcon = Custom:Create("ImageLabel", {
@@ -886,27 +1036,26 @@ function WisHub_Library:CreateWindow(Config)
 
 	local DiscordText = Custom:Create("TextLabel", {
 		Font = Custom.Font,
-		Text = DiscordInvite,
-		TextColor3 = Color3.fromRGB(235, 235, 240),
-		TextSize = 12,
+		Text = tostring(DiscordInvite),
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+		TextSize = 11,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
-		Position = UDim2.new(0, 27, 0, 0),
-		Size = UDim2.new(1, -32, 1, 0),
+		Position = UDim2.new(0, 26, 0, 0),
+		Size = UDim2.new(1, -30, 1, 0),
 		Name = "DiscordText",
 	}, DiscordPill)
 
-	local DiscordTextWidth = math.clamp(#tostring(DiscordInvite) * 7, 40, 170)
-
+	local DiscordTextWidth = math.clamp(#tostring(DiscordInvite) * 7, 40, 150)
 	if DiscordLogo == "" then
 		DiscordIcon.Visible = false
-		DiscordText.Position = UDim2.new(0, 11, 0, 0)
-		DiscordText.Size = UDim2.new(1, -16, 1, 0)
-		DiscordPill.Size = UDim2.new(0, math.clamp(DiscordTextWidth + 22, 58, 178), 0, 22)
+		DiscordText.Position = UDim2.new(0, 10, 0, 0)
+		DiscordText.Size = UDim2.new(1, -14, 1, 0)
+		DiscordPill.Size = UDim2.new(0, math.clamp(DiscordTextWidth + 20, 58, 160), 0, 22)
 	else
-		DiscordPill.Size = UDim2.new(0, math.clamp(DiscordTextWidth + 38, 72, 190), 0, 22)
+		DiscordPill.Size = UDim2.new(0, math.clamp(DiscordTextWidth + 36, 72, 175), 0, 22)
 	end
 
 	local DiscordButton = Custom:Create("TextButton", {
@@ -921,13 +1070,13 @@ function WisHub_Library:CreateWindow(Config)
 	DiscordButton.Activated:Connect(function()
 		pcall(function()
 			if setclipboard then
-				setclipboard(DiscordInvite)
+				setclipboard(tostring(DiscordInvite))
 			end
 		end)
-		WisHub_Library:SetNotification({
-			Title = "WisHUB",
+		VzUiLibrary:SetNotification({
+			Title = "VzHub",
 			Description = "Discord",
-			Content = "Copied to clipboard: " .. DiscordInvite,
+			Content = "Copied to clipboard: " .. tostring(DiscordInvite),
 		})
 	end)
 
@@ -1350,7 +1499,7 @@ function WisHub_Library:CreateWindow(Config)
 	end)
 
 	Open_Close.Activated:Connect(function()
-		if Open_Close:GetAttribute("WisDragged") then
+		if Open_Close:GetAttribute("VzDragged") then
 			return
 		end
 		if not DropShadowHolder or not DropShadowHolder.Parent then
@@ -1395,7 +1544,7 @@ function WisHub_Library:CreateWindow(Config)
 
 	Custom:Create("TextLabel", {
 		Font = Custom.Font,
-		Text = "Close WisHUB?",
+		Text = "Close VzHub?",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 16,
 		BackgroundTransparency = 1,
@@ -1479,11 +1628,11 @@ function WisHub_Library:CreateWindow(Config)
 		if Open_Close then
 			Open_Close.Visible = false
 		end
-		if WisHubGui then
-			WisHubGui:Destroy()
+		if VzHubGui then
+			VzHubGui:Destroy()
 		end
-		if not WisHub_Library.Unloaded then
-			WisHub_Library.Unloaded = true
+		if not VzUiLibrary.Unloaded then
+			VzUiLibrary.Unloaded = true
 		end
 	end)
 
@@ -1583,7 +1732,7 @@ function WisHub_Library:CreateWindow(Config)
 		local Folder = tostring(
 			Config.ConfigFolder
 				or Config.Folder
-				or ("WisHUB/" .. (FolderTitle ~= "" and FolderTitle or "Hub") .. "/" .. GameKey)
+				or ("VzHub/" .. (FolderTitle ~= "" and FolderTitle or "Hub") .. "/" .. GameKey)
 		)
 		local AutoLoadPath = Folder .. "/autoload.txt"
 
@@ -2004,7 +2153,7 @@ function WisHub_Library:CreateWindow(Config)
 		return string.lower(Text)
 	end
 
-	local PreferredTab = Config.DefaultTab or Config.DefaultTabName or WisHub_Library.LastSelectedTab or "Info"
+	local PreferredTab = Config.DefaultTab or Config.DefaultTabName or VzUiLibrary.LastSelectedTab or "Main"
 	local PreferredTabKey = NormalizeTabName(PreferredTab)
 
 	local function ResolveTabState(TabName)
@@ -2013,7 +2162,10 @@ function WisHub_Library:CreateWindow(Config)
 
 	local function ResolveTabIcon(TabName, ExplicitIcon)
 		if ExplicitIcon and ExplicitIcon ~= "" then
-			return ExplicitIcon
+			if Icons[ExplicitIcon] then
+				return Icons[ExplicitIcon]
+			end
+			return FormatAssetId(ExplicitIcon)
 		end
 
 		local IconKey = DefaultTabIcons[NormalizeTabName(TabName)]
@@ -2092,16 +2244,16 @@ function WisHub_Library:CreateWindow(Config)
 		TabState.ChooseFrame.Size = IsActive and UDim2.new(0, 2, 0, 14) or UDim2.new(0, 0, 0, 0)
 
 		SafeTween(TabState.Tab, Tween, {
-			BackgroundColor3 = IsActive and Color3.fromRGB(48, 24, 70) or Color3.fromRGB(255, 255, 255),
-			BackgroundTransparency = IsActive and 0.12 or 0.999,
+			BackgroundColor3 = IsActive and Custom.Surface3 or Color3.fromRGB(255, 255, 255),
+			BackgroundTransparency = IsActive and 0.18 or 0.999,
 		})
 
 		SafeTween(TabState.NameLabel, Tween, {
-			TextColor3 = IsActive and Color3.fromRGB(248, 244, 255) or Color3.fromRGB(205, 205, 214),
+			TextColor3 = IsActive and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(190, 192, 202),
 		})
 
 		SafeTween(TabState.IconLabel, Tween, {
-			ImageColor3 = IsActive and Custom.ColorRGB or Color3.fromRGB(150, 150, 160),
+			ImageColor3 = IsActive and Custom.ColorRGB or Color3.fromRGB(150, 153, 165),
 			ImageTransparency = TabState.Icon == "" and 1 or (IsActive and 0 or 0.28),
 		})
 	end
@@ -2114,7 +2266,7 @@ function WisHub_Library:CreateWindow(Config)
 
 		CurrentTab = TabState.Name
 		Tabs.CurrentTab = CurrentTab
-		WisHub_Library.LastSelectedTab = CurrentTab
+		VzUiLibrary.LastSelectedTab = CurrentTab
 		NameTab.Text = CurrentTab
 		CloseFloatingState()
 
@@ -3840,7 +3992,7 @@ function WisHub_Library:CreateWindow(Config)
 									Option,
 									TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 									{
-										BackgroundColor3 = Selected and Color3.fromRGB(48, 24, 70) or Custom.Surface3,
+										BackgroundColor3 = Selected and Color3.fromRGB(34, 46, 60) or Custom.Surface3,
 										BackgroundTransparency = Selected and 0.08 or 0.999,
 									}
 								)
@@ -3879,7 +4031,7 @@ function WisHub_Library:CreateWindow(Config)
 							local Selected = table.find(Funcs_Dropdown.Value, OptionName) ~= nil
 
 							local Option = Custom:Create("Frame", {
-								BackgroundColor3 = Selected and Color3.fromRGB(48, 24, 70) or Custom.Surface3,
+								BackgroundColor3 = Selected and Color3.fromRGB(34, 46, 60) or Custom.Surface3,
 								BackgroundTransparency = Selected and 0.08 or 0.999,
 								BorderColor3 = Color3.fromRGB(0, 0, 0),
 								BorderSizePixel = 0,
@@ -4312,8 +4464,8 @@ function WisHub_Library:CreateWindow(Config)
 						return
 					end
 
-					WisHub_Library:SetNotification({
-						Title = "WisHUB",
+					VzUiLibrary:SetNotification({
+						Title = "VzHub",
 						Description = "Config",
 						Content = Content,
 					})
@@ -4725,6 +4877,959 @@ function WisHub_Library:CreateWindow(Config)
 				return self:AddConfigPanel(Config)
 			end
 
+			function Item:AddGameGraph(Config)
+				Config = Config or {}
+				local GraphTitle = Config[1] or Config.Title or "Performance Graph"
+				local GraphDesc = Config[2] or Config.Content or "Real-time Telemetry"
+				local Mode = string.upper(tostring(Config.Mode or "FPS"))
+				local MaxPoints = math.clamp(tonumber(Config.MaxPoints or 28), 10, 50)
+				local Interval = tonumber(Config.Interval or 0.25)
+				local GraphHeight = tonumber(Config.Height or 132)
+				local AccentColor = Config.Color or Custom.ColorRGB
+
+				local Funcs_Graph = {
+					Values = {},
+					IsPaused = false,
+					Mode = Mode,
+				}
+
+				local GraphCard = Custom:Create("Frame", {
+					Name = "GameGraphCard",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.14,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, GraphHeight),
+				}, SectionAdd)
+
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 6) }, GraphCard)
+				Custom:Create("UIStroke", {
+					Color = Custom.Stroke,
+					Thickness = 1,
+					Transparency = 0.72,
+				}, GraphCard)
+
+				local Header = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, 7),
+					Size = UDim2.new(1, -20, 0, 26),
+				}, GraphCard)
+
+				local TitleLbl = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = GraphTitle,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 0, 0, 0),
+					Size = UDim2.new(0.55, 0, 0, 14),
+				}, Header)
+
+				local DescLbl = Custom:Create("TextLabel", {
+					Font = Custom.FontBody,
+					Text = GraphDesc,
+					TextSize = 11,
+					TextColor3 = Custom.Muted,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 0, 0, 14),
+					Size = UDim2.new(0.55, 0, 0, 12),
+				}, Header)
+
+				local ValueBadge = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = "-- " .. Mode,
+					TextSize = 14,
+					TextColor3 = AccentColor,
+					TextXAlignment = Enum.TextXAlignment.Right,
+					BackgroundTransparency = 1,
+					AnchorPoint = Vector2.new(1, 0.5),
+					Position = UDim2.new(1, 0, 0.5, 0),
+					Size = UDim2.new(0.4, 0, 0, 18),
+				}, Header)
+
+				local Canvas = Custom:Create("Frame", {
+					Name = "Canvas",
+					BackgroundColor3 = Custom.ObsidianMid,
+					BackgroundTransparency = 0.45,
+					Position = UDim2.new(0, 10, 0, 36),
+					Size = UDim2.new(1, -20, 1, -44),
+					ClipsDescendants = true,
+				}, GraphCard)
+
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, Canvas)
+				Custom:Create("UIStroke", {
+					Color = Custom.StrokeSubtle,
+					Thickness = 1,
+					Transparency = 0.65,
+				}, Canvas)
+
+				for i = 1, 3 do
+					Custom:Create("Frame", {
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 0.94,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 0, i * 0.25, 0),
+						Size = UDim2.new(1, 0, 0, 1),
+					}, Canvas)
+				end
+
+				local BarsHolder = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Size = UDim2.new(1, -6, 1, -6),
+					Position = UDim2.new(0, 3, 0, 3),
+				}, Canvas)
+
+				local Bars = {}
+				for i = 1, MaxPoints do
+					local Bar = Custom:Create("Frame", {
+						BackgroundColor3 = AccentColor,
+						BackgroundTransparency = 0.35,
+						BorderSizePixel = 0,
+						AnchorPoint = Vector2.new(0, 1),
+						Position = UDim2.new((i - 1) / MaxPoints, 0, 1, 0),
+						Size = UDim2.new(1 / MaxPoints, -1, 0, 2),
+					}, BarsHolder)
+					Custom:Create("UICorner", { CornerRadius = UDim.new(0, 2) }, Bar)
+					Bars[i] = Bar
+				end
+
+				local function RenderGraph()
+					local count = #Funcs_Graph.Values
+					if count == 0 then return end
+					local maxVal = 1
+					for _, v in ipairs(Funcs_Graph.Values) do
+						if v > maxVal then maxVal = v end
+					end
+
+					local latest = Funcs_Graph.Values[count] or 0
+					ValueBadge.Text = string.format("%d %s", math.floor(latest), Funcs_Graph.Mode)
+
+					for i = 1, MaxPoints do
+						local bar = Bars[i]
+						local dataIndex = count - (MaxPoints - i)
+						if dataIndex > 0 and Funcs_Graph.Values[dataIndex] then
+							local val = Funcs_Graph.Values[dataIndex]
+							local ratio = math.clamp(val / maxVal, 0.05, 1)
+							bar.Size = UDim2.new(1 / MaxPoints, -1, ratio, 0)
+							bar.BackgroundTransparency = i == MaxPoints and 0.05 or 0.38
+						else
+							bar.Size = UDim2.new(1 / MaxPoints, -1, 0, 2)
+							bar.BackgroundTransparency = 0.8
+						end
+					end
+				end
+
+				function Funcs_Graph:AddPoint(val)
+					table.insert(self.Values, tonumber(val) or 0)
+					if #self.Values > MaxPoints then
+						table.remove(self.Values, 1)
+					end
+					RenderGraph()
+				end
+
+				function Funcs_Graph:SetMode(newMode)
+					self.Mode = string.upper(tostring(newMode or "CUSTOM"))
+				end
+
+				function Funcs_Graph:SetPaused(paused)
+					self.IsPaused = paused == true
+				end
+
+				function Funcs_Graph:Clear()
+					table.clear(self.Values)
+					RenderGraph()
+				end
+
+				local running = true
+				task.spawn(function()
+					local lastClock = os.clock()
+					local frames = 0
+					while running and GraphCard and GraphCard.Parent do
+						if not Funcs_Graph.IsPaused then
+							if Funcs_Graph.Mode == "FPS" then
+								frames += 1
+								local now = os.clock()
+								if now - lastClock >= Interval then
+									local fps = math.floor(frames / (now - lastClock))
+									frames = 0
+									lastClock = now
+									Funcs_Graph:AddPoint(fps)
+								end
+							elseif Funcs_Graph.Mode == "PING" then
+								local ping = 50
+								pcall(function() ping = math.floor(Player:GetNetworkPing() * 1000) end)
+								Funcs_Graph:AddPoint(ping)
+							elseif Funcs_Graph.Mode == "MEMORY" then
+								local mem = 250
+								pcall(function() mem = math.floor(gcinfo() / 1024) end)
+								Funcs_Graph:AddPoint(mem)
+							end
+						end
+						task.wait(Interval)
+					end
+				end)
+
+				function Funcs_Graph:Destroy()
+					running = false
+					if GraphCard then GraphCard:Destroy() end
+				end
+
+				RegisterSearchEntry({
+					Title = GraphTitle,
+					Type = "Graph",
+					Tab = _Name,
+					Section = SectionState.Title,
+					Instance = GraphCard,
+					Scroll = SectionState.Scroll,
+					OpenSection = SectionState.Open,
+				})
+
+				ItemCount += 1
+				UpdateSizeSection()
+				return Funcs_Graph
+			end
+
+			function Item:AddTradingChart(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "Trading Terminal"
+				local Pair = Config[2] or Config.Pair or "VZ / USD"
+				local InitialPrice = tonumber(Config[3] or Config.Price or 2450.80)
+				local Interval = tonumber(Config.Interval or 0.25)
+				local ChartHeight = tonumber(Config.Height or 170)
+				local MaxCandles = math.clamp(tonumber(Config.MaxCandles or 26), 12, 45)
+				local ColorUp = Config.ColorUp or Color3.fromRGB(65, 220, 145)
+				local ColorDown = Config.ColorDown or Color3.fromRGB(245, 85, 105)
+				local Callback = Config.Callback or function() end
+
+				local Funcs_Trading = {
+					Price = InitialPrice,
+					Ticks = {},
+					IsPaused = false,
+					Pair = Pair,
+				}
+
+				local TradingCard = Custom:Create("Frame", {
+					Name = "TradingChartCard",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.12,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, ChartHeight),
+				}, SectionAdd)
+
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 6) }, TradingCard)
+				Custom:Create("UIStroke", {
+					Color = Custom.Stroke,
+					Thickness = 1,
+					Transparency = 0.72,
+				}, TradingCard)
+
+				local Header = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, 8),
+					Size = UDim2.new(1, -20, 0, 32),
+				}, TradingCard)
+
+				local PairLabel = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = Pair,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 0, 0, 0),
+					Size = UDim2.new(0.4, 0, 0, 14),
+				}, Header)
+
+				local SubTitle = Custom:Create("TextLabel", {
+					Font = Custom.FontBody,
+					Text = "24h Vol $12.4M • High $2,580.00",
+					TextSize = 11,
+					TextColor3 = Custom.Muted,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 0, 0, 15),
+					Size = UDim2.new(0.6, 0, 0, 12),
+				}, Header)
+
+				local PriceLabel = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = string.format("$%.2f", InitialPrice),
+					TextSize = 15,
+					TextColor3 = ColorUp,
+					TextXAlignment = Enum.TextXAlignment.Right,
+					BackgroundTransparency = 1,
+					AnchorPoint = Vector2.new(1, 0),
+					Position = UDim2.new(1, 0, 0, 0),
+					Size = UDim2.new(0.4, 0, 0, 16),
+				}, Header)
+
+				local ChangeBadge = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = "+3.45% ▲",
+					TextSize = 11,
+					TextColor3 = ColorUp,
+					TextXAlignment = Enum.TextXAlignment.Right,
+					BackgroundTransparency = 1,
+					AnchorPoint = Vector2.new(1, 0),
+					Position = UDim2.new(1, 0, 0, 16),
+					Size = UDim2.new(0.4, 0, 0, 12),
+				}, Header)
+
+				local Canvas = Custom:Create("Frame", {
+					BackgroundColor3 = Custom.ObsidianMid,
+					BackgroundTransparency = 0.5,
+					Position = UDim2.new(0, 10, 0, 44),
+					Size = UDim2.new(1, -20, 1, -82),
+					ClipsDescendants = true,
+				}, TradingCard)
+
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, Canvas)
+				Custom:Create("UIStroke", {
+					Color = Custom.StrokeSubtle,
+					Thickness = 1,
+					Transparency = 0.65,
+				}, Canvas)
+
+				for i = 1, 2 do
+					Custom:Create("Frame", {
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						BackgroundTransparency = 0.95,
+						BorderSizePixel = 0,
+						Position = UDim2.new(0, 0, i * 0.33, 0),
+						Size = UDim2.new(1, 0, 0, 1),
+					}, Canvas)
+				end
+
+				local BarsHolder = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 4, 0, 4),
+					Size = UDim2.new(1, -8, 1, -8),
+				}, Canvas)
+
+				local CandleBars = {}
+				for i = 1, MaxCandles do
+					local Candle = Custom:Create("Frame", {
+						BackgroundColor3 = ColorUp,
+						BackgroundTransparency = 0.3,
+						BorderSizePixel = 0,
+						AnchorPoint = Vector2.new(0, 1),
+						Position = UDim2.new((i - 1) / MaxCandles, 0, 1, 0),
+						Size = UDim2.new(1 / MaxCandles, -2, 0.4, 0),
+					}, BarsHolder)
+					Custom:Create("UICorner", { CornerRadius = UDim.new(0, 2) }, Candle)
+					CandleBars[i] = Candle
+				end
+
+				local function RenderTrading()
+					local total = #Funcs_Trading.Ticks
+					if total == 0 then return end
+					local minP, maxP = Funcs_Trading.Ticks[1].Price, Funcs_Trading.Ticks[1].Price
+					for _, tick in ipairs(Funcs_Trading.Ticks) do
+						if tick.Price < minP then minP = tick.Price end
+						if tick.Price > maxP then maxP = tick.Price end
+					end
+					local range = math.max(0.1, maxP - minP)
+
+					local latest = Funcs_Trading.Ticks[total]
+					PriceLabel.Text = string.format("$%.2f", latest.Price)
+					local isGain = latest.Price >= InitialPrice
+					local pct = ((latest.Price - InitialPrice) / InitialPrice) * 100
+					ChangeBadge.Text = string.format("%s%.2f%% %s", isGain and "+" or "", pct, isGain and "▲" or "▼")
+					ChangeBadge.TextColor3 = isGain and ColorUp or ColorDown
+					PriceLabel.TextColor3 = isGain and ColorUp or ColorDown
+
+					for i = 1, MaxCandles do
+						local candle = CandleBars[i]
+						local dataIndex = total - (MaxCandles - i)
+						if dataIndex > 0 and Funcs_Trading.Ticks[dataIndex] then
+							local tick = Funcs_Trading.Ticks[dataIndex]
+							local ratio = math.clamp((tick.Price - minP) / range, 0.08, 0.95)
+							candle.Size = UDim2.new(1 / MaxCandles, -2, ratio, 0)
+							candle.BackgroundColor3 = tick.IsUp and ColorUp or ColorDown
+							candle.BackgroundTransparency = i == MaxCandles and 0.05 or 0.35
+						else
+							candle.Size = UDim2.new(1 / MaxCandles, -2, 0.05, 0)
+							candle.BackgroundTransparency = 0.85
+						end
+					end
+				end
+
+				function Funcs_Trading:AddTick(price, isUp)
+					self.Price = price
+					table.insert(self.Ticks, { Price = price, IsUp = isUp })
+					if #self.Ticks > MaxCandles then
+						table.remove(self.Ticks, 1)
+					end
+					RenderTrading()
+				end
+
+				local currentSeed = InitialPrice
+				for i = 1, MaxCandles do
+					local delta = (math.random(-15, 18) * 0.01) * currentSeed
+					currentSeed = math.max(1, currentSeed + delta)
+					Funcs_Trading:AddTick(currentSeed, delta >= 0)
+				end
+
+				local ActionHolder = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 1, -30),
+					Size = UDim2.new(1, -20, 0, 22),
+				}, TradingCard)
+
+				local BuyBtn = Custom:Create("TextButton", {
+					Font = Custom.Font,
+					Text = "BUY / LONG",
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextSize = 11,
+					BackgroundColor3 = ColorUp,
+					BackgroundTransparency = 0.35,
+					BorderSizePixel = 0,
+					Position = UDim2.new(0, 0, 0, 0),
+					Size = UDim2.new(0.48, 0, 1, 0),
+				}, ActionHolder)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, BuyBtn)
+
+				local SellBtn = Custom:Create("TextButton", {
+					Font = Custom.Font,
+					Text = "SELL / SHORT",
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextSize = 11,
+					BackgroundColor3 = ColorDown,
+					BackgroundTransparency = 0.35,
+					BorderSizePixel = 0,
+					Position = UDim2.new(0.52, 0, 0, 0),
+					Size = UDim2.new(0.48, 0, 1, 0),
+				}, ActionHolder)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, SellBtn)
+
+				BuyBtn.Activated:Connect(function()
+					CircleClick(BuyBtn, Player:GetMouse().X, Player:GetMouse().Y)
+					Callback("BUY", Funcs_Trading.Price)
+				end)
+
+				SellBtn.Activated:Connect(function()
+					CircleClick(SellBtn, Player:GetMouse().X, Player:GetMouse().Y)
+					Callback("SELL", Funcs_Trading.Price)
+				end)
+
+				local liveRunning = true
+				task.spawn(function()
+					while liveRunning and TradingCard and TradingCard.Parent do
+						task.wait(Interval)
+						if not Funcs_Trading.IsPaused then
+							local changeFactor = (math.random(-12, 14) / 1000)
+							local newPrice = math.max(1, Funcs_Trading.Price * (1 + changeFactor))
+							Funcs_Trading:AddTick(newPrice, changeFactor >= 0)
+						end
+					end
+				end)
+
+				function Funcs_Trading:Destroy()
+					liveRunning = false
+					if TradingCard then TradingCard:Destroy() end
+				end
+
+				RegisterSearchEntry({
+					Title = Title,
+					Type = "TradingChart",
+					Tab = _Name,
+					Section = SectionState.Title,
+					Instance = TradingCard,
+					Scroll = SectionState.Scroll,
+					OpenSection = SectionState.Open,
+				})
+
+				ItemCount += 1
+				UpdateSizeSection()
+				return Funcs_Trading
+			end
+
+			function Item:AddKeybind(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "Keybind"
+				local Content = Config[2] or Config.Content or ""
+				local Default = Config[3] or Config.Default or Enum.KeyCode.RightControl
+				local Callback = Config[4] or Config.Callback or function() end
+
+				if typeof(Default) == "string" then
+					pcall(function() Default = Enum.KeyCode[Default] end)
+				end
+
+				local Funcs_Keybind = { Value = Default, Listening = false }
+				local RowHeight = CompactRowHeight(Content)
+
+				local KeybindFrame = Custom:Create("Frame", {
+					Name = "Keybind",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.14,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, RowHeight),
+				}, SectionAdd)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, KeybindFrame)
+
+				local KeybindTitle = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = Title,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = Content == "" and UDim2.new(0, 10, 0.5, -7) or UDim2.new(0, 10, 0, 7),
+					Size = UDim2.new(1, -120, 0, 13),
+				}, KeybindFrame)
+
+				local KeybindContent = Custom:Create("TextLabel", {
+					Font = Custom.FontBody,
+					Text = Content,
+					TextSize = 12,
+					TextColor3 = Custom.Muted,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, 21),
+					Size = UDim2.new(1, -120, 0, 12),
+					Visible = Content ~= "",
+				}, KeybindFrame)
+
+				local function UpdateSize()
+					RowHeight = LayoutCompactRow(KeybindTitle, KeybindContent, Content, -120)
+					KeybindFrame.Size = UDim2.new(1, 0, 0, RowHeight)
+					UpdateSizeSection()
+				end
+				UpdateSize()
+				BindAutoRowHeight(KeybindTitle, UpdateSize)
+
+				local KeyButton = Custom:Create("TextButton", {
+					Font = Custom.Font,
+					Text = "[ " .. (Funcs_Keybind.Value and Funcs_Keybind.Value.Name or "None") .. " ]",
+					TextSize = 12,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundColor3 = Custom.Surface3,
+					BackgroundTransparency = 0.15,
+					BorderSizePixel = 0,
+					AnchorPoint = Vector2.new(1, 0.5),
+					Position = UDim2.new(1, -10, 0.5, 0),
+					Size = UDim2.new(0, 80, 0, 22),
+				}, KeybindFrame)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, KeyButton)
+				local KeyStroke = Custom:Create("UIStroke", {
+					Color = Custom.Stroke,
+					Thickness = 1,
+					Transparency = 0.5,
+				}, KeyButton)
+
+				KeyButton.Activated:Connect(function()
+					if Funcs_Keybind.Listening then return end
+					Funcs_Keybind.Listening = true
+					KeyButton.Text = "[ ... ]"
+					KeyStroke.Color = Custom.ColorRGB
+					KeyStroke.Transparency = 0.1
+				end)
+
+				UserInputService.InputBegan:Connect(function(input, gpe)
+					if Funcs_Keybind.Listening then
+						if input.UserInputType == Enum.UserInputType.Keyboard then
+							if input.KeyCode == Enum.KeyCode.Backspace then
+								Funcs_Keybind.Value = nil
+								KeyButton.Text = "[ None ]"
+							else
+								Funcs_Keybind.Value = input.KeyCode
+								KeyButton.Text = "[ " .. input.KeyCode.Name .. " ]"
+							end
+							Funcs_Keybind.Listening = false
+							KeyStroke.Color = Custom.Stroke
+							KeyStroke.Transparency = 0.5
+							Callback(Funcs_Keybind.Value)
+						end
+					elseif not gpe and Funcs_Keybind.Value and input.KeyCode == Funcs_Keybind.Value then
+						Callback(Funcs_Keybind.Value)
+					end
+				end)
+
+				function Funcs_Keybind:Set(key)
+					if typeof(key) == "string" then
+						pcall(function() key = Enum.KeyCode[key] end)
+					end
+					self.Value = key
+					KeyButton.Text = "[ " .. (key and key.Name or "None") .. " ]"
+				end
+
+				function Funcs_Keybind:Get()
+					return self.Value
+				end
+
+				RegisterSearchEntry({
+					Title = Title,
+					Type = "Keybind",
+					Tab = _Name,
+					Section = SectionState.Title,
+					Instance = KeybindFrame,
+					Scroll = SectionState.Scroll,
+					OpenSection = SectionState.Open,
+				})
+
+				ItemCount += 1
+				return Funcs_Keybind
+			end
+
+			function Item:AddColorPicker(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "Color Picker"
+				local Content = Config[2] or Config.Content or ""
+				local Default = Config[3] or Config.Default or Custom.ColorRGB
+				local Callback = Config[4] or Config.Callback or function() end
+
+				local Funcs_Color = { Value = Default, Expanded = false }
+				local BaseHeight = CompactRowHeight(Content)
+
+				local ColorFrame = Custom:Create("Frame", {
+					Name = "ColorPicker",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.14,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					ClipsDescendants = true,
+					Size = UDim2.new(1, 0, 0, BaseHeight),
+				}, SectionAdd)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, ColorFrame)
+
+				local ColorTitle = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = Title,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = Content == "" and UDim2.new(0, 10, 0.5, -7) or UDim2.new(0, 10, 0, 7),
+					Size = UDim2.new(1, -70, 0, 13),
+				}, ColorFrame)
+
+				local ColorContent = Custom:Create("TextLabel", {
+					Font = Custom.FontBody,
+					Text = Content,
+					TextSize = 12,
+					TextColor3 = Custom.Muted,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, 21),
+					Size = UDim2.new(1, -70, 0, 12),
+					Visible = Content ~= "",
+				}, ColorFrame)
+
+				local SwatchBtn = Custom:Create("TextButton", {
+					Text = "",
+					BackgroundColor3 = Default,
+					BorderSizePixel = 0,
+					AnchorPoint = Vector2.new(1, 0),
+					Position = UDim2.new(1, -12, 0, (BaseHeight - 20) / 2),
+					Size = UDim2.new(0, 38, 0, 20),
+				}, ColorFrame)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, SwatchBtn)
+				Custom:Create("UIStroke", {
+					Color = Color3.fromRGB(255, 255, 255),
+					Thickness = 1,
+					Transparency = 0.6,
+				}, SwatchBtn)
+
+				local PaletteFrame = Custom:Create("Frame", {
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, BaseHeight + 4),
+					Size = UDim2.new(1, -20, 0, 26),
+					Visible = false,
+				}, ColorFrame)
+
+				local Presets = {
+					Color3.fromRGB(75, 180, 235),  -- Neon Cyan
+					Color3.fromRGB(115, 135, 255), -- Royal Neon Blue
+					Color3.fromRGB(180, 110, 255), -- Purple
+					Color3.fromRGB(255, 105, 135), -- Neon Pink
+					Color3.fromRGB(255, 75, 75),   -- Red
+					Color3.fromRGB(65, 220, 145),  -- Emerald Green
+					Color3.fromRGB(255, 195, 60),  -- Gold / Yellow
+					Color3.fromRGB(255, 255, 255), -- Pure White
+				}
+
+				for i, color in ipairs(Presets) do
+					local dot = Custom:Create("TextButton", {
+						Text = "",
+						BackgroundColor3 = color,
+						BorderSizePixel = 0,
+						Position = UDim2.new((i - 1) * 0.125, 2, 0, 2),
+						Size = UDim2.new(0.125, -4, 0, 20),
+					}, PaletteFrame)
+					Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, dot)
+
+					dot.Activated:Connect(function()
+						Funcs_Color:Set(color)
+					end)
+				end
+
+				local function ToggleExpand()
+					Funcs_Color.Expanded = not Funcs_Color.Expanded
+					PaletteFrame.Visible = Funcs_Color.Expanded
+					local targetH = Funcs_Color.Expanded and (BaseHeight + 36) or BaseHeight
+					SafeTween(ColorFrame, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(1, 0, 0, targetH)
+					})
+					task.delay(0.16, UpdateSizeSection)
+				end
+
+				SwatchBtn.Activated:Connect(ToggleExpand)
+
+				function Funcs_Color:Set(color)
+					self.Value = color
+					SwatchBtn.BackgroundColor3 = color
+					Callback(color)
+				end
+
+				function Funcs_Color:Get()
+					return self.Value
+				end
+
+				RegisterSearchEntry({
+					Title = Title,
+					Type = "ColorPicker",
+					Tab = _Name,
+					Section = SectionState.Title,
+					Instance = ColorFrame,
+					Scroll = SectionState.Scroll,
+					OpenSection = SectionState.Open,
+				})
+
+				ItemCount += 1
+				return Funcs_Color
+			end
+
+			function Item:AddStatCard(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "STATISTICS"
+				local StatsList = Config.Stats or Config.Items or {
+					{ Title = "PING", Value = "45 ms" },
+					{ Title = "FPS", Value = "60" },
+					{ Title = "STATUS", Value = "Online" },
+				}
+
+				local Card = Custom:Create("Frame", {
+					Name = "StatCard",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.14,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, 60),
+				}, SectionAdd)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 6) }, Card)
+				Custom:Create("UIStroke", {
+					Color = Custom.Stroke,
+					Thickness = 1,
+					Transparency = 0.75,
+				}, Card)
+
+				local NumCols = math.max(1, #StatsList)
+				local ValueLabels = {}
+
+				for i, item in ipairs(StatsList) do
+					local Col = Custom:Create("Frame", {
+						BackgroundTransparency = 1,
+						Position = UDim2.new((i - 1) / NumCols, 0, 0, 0),
+						Size = UDim2.new(1 / NumCols, 0, 1, 0),
+					}, Card)
+
+					Custom:Create("TextLabel", {
+						Font = Custom.Font,
+						Text = string.upper(tostring(item.Title or item[1] or "STAT")),
+						TextSize = 10,
+						TextColor3 = Custom.Muted,
+						TextXAlignment = Enum.TextXAlignment.Center,
+						BackgroundTransparency = 1,
+						Position = UDim2.new(0, 0, 0, 10),
+						Size = UDim2.new(1, 0, 0, 14),
+					}, Col)
+
+					local val = Custom:Create("TextLabel", {
+						Font = Custom.Font,
+						Text = tostring(item.Value or item[2] or "--"),
+						TextSize = 14,
+						TextColor3 = Color3.fromRGB(255, 255, 255),
+						TextXAlignment = Enum.TextXAlignment.Center,
+						BackgroundTransparency = 1,
+						Position = UDim2.new(0, 0, 0, 26),
+						Size = UDim2.new(1, 0, 0, 20),
+					}, Col)
+
+					if i < NumCols then
+						Custom:Create("Frame", {
+							BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+							BackgroundTransparency = 0.92,
+							BorderSizePixel = 0,
+							AnchorPoint = Vector2.new(1, 0.5),
+							Position = UDim2.new(1, 0, 0.5, 0),
+							Size = UDim2.new(0, 1, 0.6, 0),
+						}, Col)
+					end
+
+					ValueLabels[i] = val
+				end
+
+				local Funcs_Stat = {}
+				function Funcs_Stat:Set(index, text)
+					if ValueLabels[index] then
+						ValueLabels[index].Text = tostring(text)
+					end
+				end
+
+				ItemCount += 1
+				UpdateSizeSection()
+				return Funcs_Stat
+			end
+
+			function Item:AddProgressBar(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "Progress"
+				local Content = Config[2] or Config.Content or ""
+				local Value = tonumber(Config.Value or 50)
+				local Max = tonumber(Config.Max or 100)
+				local Color = Config.Color or Custom.ColorRGB
+
+				local Funcs_Bar = { Value = Value, Max = Max }
+				local CardHeight = Content == "" and 44 or 56
+
+				local BarFrame = Custom:Create("Frame", {
+					Name = "ProgressBar",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.14,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, CardHeight),
+				}, SectionAdd)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 4) }, BarFrame)
+
+				local TitleLbl = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = Title,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 10, 0, 8),
+					Size = UDim2.new(0.6, 0, 0, 14),
+				}, BarFrame)
+
+				local PctLbl = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = string.format("%d%%", math.floor((Value / Max) * 100)),
+					TextSize = 12,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Right,
+					BackgroundTransparency = 1,
+					AnchorPoint = Vector2.new(1, 0),
+					Position = UDim2.new(1, -10, 0, 8),
+					Size = UDim2.new(0.3, 0, 0, 14),
+				}, BarFrame)
+
+				local Track = Custom:Create("Frame", {
+					BackgroundColor3 = Custom.Surface3,
+					BorderSizePixel = 0,
+					Position = UDim2.new(0, 10, 0, Content == "" and 26 or 36),
+					Size = UDim2.new(1, -20, 0, 8),
+				}, BarFrame)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(1, 0) }, Track)
+
+				local Fill = Custom:Create("Frame", {
+					BackgroundColor3 = Color,
+					BorderSizePixel = 0,
+					Size = UDim2.new(math.clamp(Value / Max, 0, 1), 0, 1, 0),
+				}, Track)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(1, 0) }, Fill)
+
+				function Funcs_Bar:Set(val, maxVal)
+					self.Value = tonumber(val) or self.Value
+					self.Max = tonumber(maxVal) or self.Max
+					local ratio = math.clamp(self.Value / self.Max, 0, 1)
+					SafeTween(Fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+						Size = UDim2.new(ratio, 0, 1, 0)
+					})
+					PctLbl.Text = string.format("%d%%", math.floor(ratio * 100))
+				end
+
+				function Funcs_Bar:Get()
+					return self.Value, self.Max
+				end
+
+				ItemCount += 1
+				UpdateSizeSection()
+				return Funcs_Bar
+			end
+
+			function Item:AddBanner(Config)
+				Config = Config or {}
+				local Title = Config[1] or Config.Title or "Notice"
+				local Content = Config[2] or Config.Content or ""
+				local BannerType = string.lower(tostring(Config.Type or "neon"))
+				local BorderColor = BannerType == "warning" and Color3.fromRGB(240, 175, 60)
+					or BannerType == "success" and Color3.fromRGB(65, 210, 135)
+					or BannerType == "danger" and Color3.fromRGB(240, 75, 90)
+					or Custom.ColorRGB
+
+				local BannerFrame = Custom:Create("Frame", {
+					Name = "Banner",
+					BackgroundColor3 = Custom.Surface,
+					BackgroundTransparency = 0.1,
+					BorderSizePixel = 0,
+					LayoutOrder = ItemCount,
+					Size = UDim2.new(1, 0, 0, 48),
+				}, SectionAdd)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 5) }, BannerFrame)
+				Custom:Create("UIStroke", {
+					Color = BorderColor,
+					Thickness = 1,
+					Transparency = 0.65,
+				}, BannerFrame)
+
+				local Indicator = Custom:Create("Frame", {
+					BackgroundColor3 = BorderColor,
+					BorderSizePixel = 0,
+					Position = UDim2.new(0, 0, 0, 0),
+					Size = UDim2.new(0, 3, 1, 0),
+				}, BannerFrame)
+				Custom:Create("UICorner", { CornerRadius = UDim.new(0, 5) }, Indicator)
+
+				local TitleLabel = Custom:Create("TextLabel", {
+					Font = Custom.Font,
+					Text = Title,
+					TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 12, 0, 7),
+					Size = UDim2.new(1, -20, 0, 14),
+				}, BannerFrame)
+
+				local ContentLabel = Custom:Create("TextLabel", {
+					Font = Custom.FontBody,
+					Text = Content,
+					TextSize = 11,
+					TextColor3 = Custom.Muted,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0, 12, 0, 23),
+					Size = UDim2.new(1, -20, 0, 14),
+					TextWrapped = true,
+				}, BannerFrame)
+
+				local Funcs_Banner = {}
+				function Funcs_Banner:Set(newTitle, newContent)
+					if newTitle then TitleLabel.Text = tostring(newTitle) end
+					if newContent then ContentLabel.Text = tostring(newContent) end
+				end
+
+				ItemCount += 1
+				UpdateSizeSection()
+				return Funcs_Banner
+			end
+
 			local RegisterableItems = {
 				AddButton = "Button",
 				AddToggle = "Toggle",
@@ -4734,6 +5839,13 @@ function WisHub_Library:CreateWindow(Config)
 				AddParagraph = "Paragraph",
 				AddConfigPanel = "Config",
 				AddSubSection = "SubSection",
+				AddGameGraph = "Graph",
+				AddTradingChart = "TradingChart",
+				AddKeybind = "Keybind",
+				AddColorPicker = "ColorPicker",
+				AddStatCard = "StatCard",
+				AddProgressBar = "ProgressBar",
+				AddBanner = "Banner",
 			}
 
 			for MethodName, TypeName in pairs(RegisterableItems) do
@@ -4751,11 +5863,93 @@ function WisHub_Library:CreateWindow(Config)
 			return Item
 		end
 
+		-- Direct shortcuts on Sections (Tab object) so users can call tab:AddButton etc. directly
+		local defaultSection = nil
+		local function GetDefaultSection()
+			if not defaultSection then
+				defaultSection = Sections:AddSection("General", true)
+			end
+			return defaultSection
+		end
+
+		for MethodName, _ in pairs({
+			AddButton = true,
+			AddToggle = true,
+			AddSlider = true,
+			AddInput = true,
+			AddDropdown = true,
+			AddParagraph = true,
+			AddConfigPanel = true,
+			AddConfig = true,
+			AddSubSection = true,
+			AddGameGraph = true,
+			AddTradingChart = true,
+			AddKeybind = true,
+			AddColorPicker = true,
+			AddStatCard = true,
+			AddProgressBar = true,
+			AddBanner = true,
+			AddSeperator = true,
+			AddSeparator = true,
+			AddLine = true,
+		}) do
+			Sections[MethodName] = function(self, Config, ...)
+				local ds = GetDefaultSection()
+				if ds[MethodName] then
+					return ds[MethodName](ds, Config, ...)
+				end
+			end
+		end
+
 		CountTab += 1
 		return Sections
+	end
+
+	-- Window helper functions on Tabs
+	function Tabs:SetBackgroundImage(DecalId, Transparency)
+		local formatted = FormatAssetId(DecalId or "")
+		BackgroundImage.Image = formatted
+		if formatted == "" then
+			BackgroundImage.ImageTransparency = 1
+		else
+			BackgroundImage.ImageTransparency = tonumber(Transparency) or 0.82
+		end
+	end
+
+	function Tabs:SetBackgroundTransparency(Transparency)
+		BackgroundImage.ImageTransparency = tonumber(Transparency) or 1
+	end
+
+	function Tabs:SetTheme(AccentColor)
+		if typeof(AccentColor) == "Color3" then
+			Custom.ColorRGB = AccentColor
+			Custom.Stroke = AccentColor
+		end
+	end
+
+	function Tabs:SetTitle(NewTitle)
+		TitleLabel.Text = tostring(NewTitle or "")
+	end
+
+	function Tabs:SetDescription(NewDesc)
+		DescLabel.Text = tostring(NewDesc or "")
+		DescLabel.Visible = tostring(NewDesc or "") ~= ""
+	end
+
+	function Tabs:AddTab(Config)
+		return self:CreateTab(Config)
+	end
+
+	function Tabs:Destroy()
+		if Open_Close then Open_Close.Visible = false end
+		if VzHubGui then VzHubGui:Destroy() end
+		VzUiLibrary.Unloaded = true
 	end
 
 	return Tabs
 end
 
-return WisHub_Library
+VzUiLibrary.Create = VzUiLibrary.CreateWindow
+VzUiLibrary.Window = VzUiLibrary.CreateWindow
+
+return VzUiLibrary
